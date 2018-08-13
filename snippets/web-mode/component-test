@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: Component test harness
+# key: comptest
+# --
+import React from 'react';
+import { shallow } from 'enzyme';
+
+import $1 from 'review-efiling/components/$2';
+
+$3
