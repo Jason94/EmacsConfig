@@ -183,6 +183,12 @@
   (win-switch-set-key "d" 'split-vertically)
   (win-switch-set-key "0" 'delete-window)
   (win-switch-set-key "\M-\C-g" 'emergency-exit))
+(use-package slime)
+(require 'slime-autoloads)
+(setq slime-lisp-implementations
+  ;    '((clisp ("/usr/bin/clisp"))
+      '((sbcl ("/usr/bin/sbcl"))))
+(setq inferior-lisp-program 'sbcl)
 
 ;; Line numbers
 (global-linum-mode t)
@@ -237,4 +243,7 @@
 (require 'paren)
 (setq show-paren-delay 0)
 (show-paren-mode 1)
-;(set-face-background 'show-paren-match "LightGoldenrod4")
+(set-face-background 'show-paren-match "LightGoldenrod4")
+
+; Disable beep
+(setq ring-bell-function 'ignore)
