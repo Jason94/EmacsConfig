@@ -19,10 +19,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(company-idle-delay 0)
  '(flycheck-javascript-flow-args nil)
  '(package-selected-packages
    (quote
-    (feature-mode yasnippet-snippets win-switch flycheck-flow company-mode flycheck flow-minor-mode dracula-theme ag web-mode undo-tree magit dumb-jump color-theme-modern ensime projectile dashboard page-break-lines scala-mode use-package))))
+    (sunshine hydra origami avy telephone-line landmark purescript-mode psc-ide feature-mode yasnippet-snippets win-switch flycheck-flow company-mode flycheck flow-minor-mode dracula-theme ag web-mode undo-tree magit dumb-jump color-theme-modern ensime projectile dashboard page-break-lines scala-mode use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -65,6 +66,8 @@
 
 (setq use-package-always-ensure t)
 
+(use-package hydra)
+
 (use-package ensime
   :ensure t)
 (setq ensime-startup-notification nil)
@@ -73,7 +76,9 @@
   :interpreter
   ("scala" . scala-mode))
 
-(use-package projectile)
+(use-package projectile
+  :config
+  (global-set-key (kbd "C-c C-p f") 'projectile-find-file))
 
 (use-package yasnippet
   :config
@@ -141,7 +146,9 @@
 
 (use-package flow-minor-mode)
 
-(use-package company-flow)
+(use-package company-flow
+  :custom
+  (company-idle-delay 0))
 
 (use-package company
   :ensure t
@@ -157,6 +164,23 @@
       '((implicitConversion . (:underline (:color "gray40")))))
 
 (use-package feature-mode)
+
+(use-package purescript-mode)
+
+(use-package psc-ide
+  :config
+  (progn
+    (add-hook 'purescript-mode-hook
+       (lambda ()
+         (psc-ide-mode)
+         (company-mode)
+         (flycheck-mode)
+         (turn-on-purescript-indentation)))
+    (setq psc-ide-use-npm-bin t)))
+
+(use-package telephone-line
+  :config
+  (telephone-line-mode 1))
 
 (defun win-switch-set-key (key command)
   (win-switch-set-keys (list key) command))
@@ -184,7 +208,29 @@
   (win-switch-set-key "0" 'delete-window)
   (win-switch-set-key "\M-\C-g" 'emergency-exit))
 
-;; Line numbers
+(use-package avy
+  :bind ("M-l" . avy-goto-char-2))
+
+(use-package origami
+  :config
+  (setq global-origami-mode t)
+  (defhydra hydra-origami (:color red)
+    "
+    _o_pen node    _n_ext fold       toggle _f_orward
+    _c_lose node   _p_revious fold   toggle _a_ll
+    "
+    ("o" origami-open-node)
+    ("c" origami-close-node)
+    ("n" origami-next-fold)
+    ("p" origami-previous-fold)
+    ("f" origami-forward-toggle-node)
+    ("a" origami-toggle-all-nodes))
+  :bind ("C-c f" . hydra-origami/body))
+
+(use-package sunshine
+  :custom (sunshine-location "53705,USA"))
+
+;; line numbers
 (global-linum-mode t)
 (setq column-number-mode t)
 
@@ -230,7 +276,9 @@
       '(("jsx" . "\\.js\\'")
         ("jsx" . "\\.jsx\\'")))
 
+;; Org mode
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(setq org-log-done 'time)
 ;(add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
 
 ; Parens
