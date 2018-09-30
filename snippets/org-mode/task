@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: VersionOne task
+# key: task
+# --
+- [ ] $1
+     - [ ] Coding
+     - [ ] Code Review
