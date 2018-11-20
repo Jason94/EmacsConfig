@@ -95,10 +95,12 @@
   :bind (("M-g o" . dumb-jump-go-other-window)
 	 ("M-g j" . dumb-jump-go)))
 
-(use-package magit)
-(global-set-key (kbd "C-x g") 'magit-status)
-(global-set-key (kbd "C-x C-g f") 'magit-find-file)
-(global-set-key (kbd "<C-tab>") 'magit-section-cycle-diffs)
+(use-package magit
+  :bind (("C-x g" . magit-status)
+         ("C-x C-g f" . magit-find-file)
+         ("<C-tab>" . magit-section-cycle-diffs)
+         ("C-x M-l" . magit-log-buffer-file)
+         ("C-x M-b" . magit-blame-addition)))
 
 (use-package exec-path-from-shell)
 (exec-path-from-shell-copy-env "SSH_AGENT_PID")
@@ -115,7 +117,9 @@
 
 (use-package ag)
 
-(use-package web-mode)
+(use-package web-mode
+  :custom
+  (web-mode-enable-auto-indentation nil))
 
 (defun my/use-eslint-from-node-modules ()
   (let* ((root (locate-dominating-file
