@@ -5,6 +5,14 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import $1 from 'review-efiling/components/$2';
+import { findsMatchers } from 'common/test-helpers/_matchers';
 
-$3
+import ${1:{ }} from '${2:scca-efiling}/${3:components}/$4';
+
+describe('$5', () => {
+  beforeEach(() => {
+    jasmine.addMatchers(findsMatchers);
+  });
+
+  $0
+});
