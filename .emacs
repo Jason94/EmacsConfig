@@ -20,10 +20,13 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(company-idle-delay 0)
+ '(custom-safe-themes
+   (quote
+    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
  '(flycheck-javascript-flow-args nil)
  '(package-selected-packages
    (quote
-    (sunshine hydra origami avy telephone-line landmark purescript-mode psc-ide feature-mode yasnippet-snippets win-switch flycheck-flow company-mode flycheck flow-minor-mode dracula-theme ag web-mode undo-tree magit dumb-jump color-theme-modern ensime projectile dashboard page-break-lines scala-mode use-package))))
+    (slime-company sunshine hydra origami avy telephone-line landmark purescript-mode psc-ide feature-mode yasnippet-snippets win-switch flycheck-flow company-mode flycheck flow-minor-mode dracula-theme ag web-mode undo-tree magit dumb-jump color-theme-modern ensime projectile dashboard page-break-lines scala-mode use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -146,22 +149,27 @@
 
 (use-package flow-minor-mode)
 
-(use-package company-flow
-  :custom
-  (company-idle-delay 0))
-
 (use-package company
   :ensure t
+  :custom (company-idle-delay 0)
   :bind (("C-c C-v" . company-complete))
   :config
   (progn
     (add-hook 'after-init-hook 'global-company-mode)
     (add-to-list 'company-backends 'company-flow)))
 
-(use-package dracula-theme)
-(load-theme 'dracula t)
-(setq ensime-sem-high-faces
-      '((implicitConversion . (:underline (:color "gray40")))))
+(use-package company-flow)
+
+(defun load-solarized-light ()
+  (use-package solarized-theme)
+  (load-theme 'solarized-light))
+
+(defun load-dracula ()
+ (use-package dracula-theme)
+ (load-theme 'dracula t)
+ (setq ensime-sem-high-faces
+       '((implicitConversion . (:underline (:color "gray40"))))))
+(load-dracula)
 
 (use-package feature-mode)
 
@@ -207,11 +215,17 @@
   (win-switch-set-key "d" 'split-vertically)
   (win-switch-set-key "0" 'delete-window)
   (win-switch-set-key "\M-\C-g" 'emergency-exit))
+
 (use-package slime)
 (require 'slime-autoloads)
 (setq slime-lisp-implementations
   ;    '((clisp ("/usr/bin/clisp"))
-      '((sbcl ("/usr/bin/sbcl"))))
+      '((sbcl ("/usr/local/bin/sbcl"))))
+
+(use-package slime-company
+  :config
+  (slime-setup '(slime-fancy slime-company)))
+
 (setq inferior-lisp-program 'sbcl)
 
 (use-package avy
