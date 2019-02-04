@@ -20,10 +20,18 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(company-idle-delay 0)
+ '(custom-safe-themes
+   (quote
+    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
+ '(erc-modules
+   (quote
+    (autojoin button completion fill irccontrols list log match menu move-to-prompt netsplit networks noncommands readonly ring stamp track)))
+ '(erc-notifications-mode t)
  '(flycheck-javascript-flow-args nil)
  '(package-selected-packages
    (quote
-    (sunshine hydra origami avy telephone-line landmark purescript-mode psc-ide feature-mode yasnippet-snippets win-switch flycheck-flow company-mode flycheck flow-minor-mode dracula-theme ag web-mode undo-tree magit dumb-jump color-theme-modern ensime projectile dashboard page-break-lines scala-mode use-package))))
+    (define-word iedit slime solarized-theme sunshine hydra origami avy telephone-line landmark purescript-mode psc-ide feature-mode yasnippet-snippets win-switch flycheck-flow company-mode flycheck flow-minor-mode dracula-theme ag web-mode undo-tree magit dumb-jump color-theme-modern ensime projectile dashboard page-break-lines scala-mode use-package)))
+ '(web-mode-enable-auto-indentation nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -47,6 +55,10 @@
 (global-set-key (kbd "M-t") 'kill-ring-save)
 (global-set-key (kbd "C-h") 'newline-and-indent)
 (global-set-key (kbd "M-s") 'ag-project)
+(global-set-key (kbd "M-e") 'revert-buffer)
+
+;; Notifications
+(require 'notifications)
 
 ;; Packages ;;
 
@@ -113,7 +125,16 @@
 			  (bookmarks . 5)
 			  (projects . 5))))
 
-(use-package undo-tree)
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode 1)
+  (defalias 'redo 'undo-tree-redo)
+  :bind
+  (("C-z" . undo)
+   ("C-M-z" . redo)
+   ("C-x u" . undo-tree-visualize)))
+
+(use-package iedit)
 
 (use-package ag)
 
@@ -162,10 +183,16 @@
     (add-hook 'after-init-hook 'global-company-mode)
     (add-to-list 'company-backends 'company-flow)))
 
-(use-package dracula-theme)
-(load-theme 'dracula t)
-(setq ensime-sem-high-faces
-      '((implicitConversion . (:underline (:color "gray40")))))
+(defun load-solarized-theme ()
+  (use-package solarized-theme)
+  (load-theme 'solarized-light))
+
+(defun load-dracula-theme ()
+ (use-package dracula-theme)
+ (load-theme 'dracula t)
+ (setq ensime-sem-high-faces
+       '((implicitConversion . (:underline (:color "gray40"))))))
+(load-dracula-theme)
 
 (use-package feature-mode)
 
@@ -240,6 +267,10 @@
 (use-package sunshine
   :custom (sunshine-location "53705,USA"))
 
+(use-package define-word
+  :bind (("C-c d" . define-word-at-point)
+         ("C-c D" . define-word)))
+
 ;; line numbers
 (global-linum-mode t)
 (setq column-number-mode t)
@@ -299,3 +330,14 @@
 
 ; Disable beep
 (setq ring-bell-function 'ignore)
+
+;; ERC
+(defun configure-erc ()
+  "Configure ERC for my work setting."
+  (setq erc-autojoin-channels-alist
+        '(("wicourts.gov" "#ccap3" "#sccaefiling")))
+  (erc :server "irc.wicourts.gov" :port 6667 :nick "JasonW")
+  (add-hook 'erc-text-matched-hook 'erc-beep-on-match)
+  (setq erc-beep-match-types '(current-nick keyword))
+  (setq erc-log-channels-directory "~/.erc/logs/"))
+(configure-erc)
