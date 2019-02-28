@@ -22,7 +22,7 @@
  '(company-idle-delay 0)
  '(custom-safe-themes
    (quote
-    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
+    ("d057f0430ba54f813a5d60c1d18f28cf97d271fd35a36be478e20924ea9451bd" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
  '(erc-modules
    (quote
     (autojoin button completion fill irccontrols list log match menu move-to-prompt netsplit networks noncommands readonly ring stamp track)))
@@ -30,7 +30,7 @@
  '(flycheck-javascript-flow-args nil)
  '(package-selected-packages
    (quote
-    (define-word iedit slime solarized-theme sunshine hydra origami avy telephone-line landmark purescript-mode psc-ide feature-mode yasnippet-snippets win-switch flycheck-flow company-mode flycheck flow-minor-mode dracula-theme ag web-mode undo-tree magit dumb-jump color-theme-modern ensime projectile dashboard page-break-lines scala-mode use-package)))
+    (prettier-js zenburn-theme define-word iedit slime solarized-theme sunshine hydra origami avy telephone-line landmark purescript-mode psc-ide feature-mode yasnippet-snippets win-switch flycheck-flow company-mode flycheck flow-minor-mode dracula-theme ag web-mode undo-tree magit dumb-jump color-theme-modern ensime projectile dashboard page-break-lines scala-mode use-package)))
  '(web-mode-enable-auto-indentation nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -192,7 +192,13 @@
  (load-theme 'dracula t)
  (setq ensime-sem-high-faces
        '((implicitConversion . (:underline (:color "gray40"))))))
-(load-dracula-theme)
+
+(defun load-zenburn-theme()
+  (use-package zenburn-theme)
+  (load-theme 'zenburn))
+
+(load-zenburn-theme)
+;;(load-solarized-theme)
 
 (use-package feature-mode)
 
@@ -271,6 +277,12 @@
   :bind (("C-c d" . define-word-at-point)
          ("C-c D" . define-word)))
 
+(use-package prettier-js
+  :init
+  (add-hook 'web-mode-hook 'prettier-js-mode)
+  :config
+  (setq prettier-js-args '("--insert-pragma" "--require-pragma")))
+
 ;; line numbers
 (global-linum-mode t)
 (setq column-number-mode t)
@@ -334,8 +346,8 @@
 ;; ERC
 (defun configure-erc ()
   "Configure ERC for my work setting."
-  (setq erc-autojoin-channels-alist
-        '(("wicourts.gov" "#ccap3" "#sccaefiling")))
+;;  (setq erc-autojoin-channels-alist
+;;        '(("wicourts.gov" "#ccap3" "#sccaefiling")))
   (erc :server "irc.wicourts.gov" :port 6667 :nick "JasonW")
   (add-hook 'erc-text-matched-hook 'erc-beep-on-match)
   (setq erc-beep-match-types '(current-nick keyword))
